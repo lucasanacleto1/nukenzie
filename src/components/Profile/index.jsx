@@ -26,11 +26,8 @@ const ProfileUser = ({ logout }) => {
   const schema = yup.object().shape({
     title: yup.string().required("Campo obrigatório"),
   });
-  const [user] = useState(JSON.parse(localStorage.getItem("@KenzieHub:user")));
-  const [token] = useState(
-    JSON.parse(localStorage.getItem("@KenzieHub:token"))
-  );
-
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("@KenzieHub:user")));
+  const [token, setToken] = useState(JSON.parse(localStorage.getItem("@KenzieHub:token")));
   const [techs, setTechs] = useState([]);
 
   const {
@@ -38,10 +35,11 @@ const ProfileUser = ({ logout }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
-
+  
+  
   useEffect(() => {
     loadTechs();
-  }, [techs]);
+  }, []);
 
   const loadTechs = () => {
     api
@@ -63,10 +61,13 @@ const ProfileUser = ({ logout }) => {
           },
         }
       )
-      .then((response) => toast.success("Tecnologia cadastrada com sucesso!"))
+      .then((response) => {
+        loadTechs();
+        toast.success("Tecnologia cadastrada com sucesso!")
+      })
       .catch((err) => toast.error("Erro! Tecnologia já cadastrada"));
     setModalOpen(false);
-    loadTechs();
+    
   };
 
   return (
